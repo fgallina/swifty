@@ -1,0 +1,7 @@
+Dynamic tagging library for awesome
+
+The approach of this library is similar to shifty but it tries to keep
+as compatible as possible with standard `awful.rules` since the rules
+for clients and tags follow the same structure.
+
+See doc/modules/swifty.html for details.

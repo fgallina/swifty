@@ -1,0 +1,1002 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>LuaDoc</h1>
+<ul>
+	
+	<li><a href="../index.html">Index</a></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+<h1>Modules</h1>
+<ul>
+
+	<li><strong>swifty</strong></li>
+	
+</ul>
+
+
+
+<!-- File list -->
+
+<h1>Files</h1>
+<ul>
+
+	<li>
+		<a href="../files/init.html">init.lua</a>
+	</li>
+
+</ul>
+
+
+
+
+
+
+</div><!-- id="navigation" -->
+
+<div id="content">
+
+<h1>Module <code>swifty</code></h1>
+
+<p>Dynamic tagging library for awesome. The approach of this library is similar to shifty but it tries to keep as compatible as possible with standard `awful.rules` since the rules for clients and tags follow the same structure. <p> rules.clients and rules.tags are a list of hash tables with the form:</p> <pre> { [rule|rule_any] = MATCH_TABLE, [except|except_any] = EXCEPT_TABLE, properties = PROPERTIES_TABLE } </pre> <p>`rule` is table that might be empty to match anything or contain one or more of the following keyword:</p> <ul> <li>class (string): match clients by WM_CLASS*</li> <li>instance (string): match clients by instance*</li> <li>name (string): match things by its name</li> <li>role (string): match clients by its role*</li> <li>type (string): match clients by its type*</li> </ul>  <p>Those marked with * are only available for rules.clients only and the xprop program might help to find proper values. See: http://wiki.compiz.org/WindowMatching</p>  <p>Alternatively, `rule_any` exists and allows matching several things at the same time by making its keys to receive a list of strings to match instead.</p>  <p>`except` and `except_any` are analog to `rule` and `rule_any` respectively, except they exclude matching clients.</p>  <p>Finally the `properties` table is a hash table of properties to apply to the matched element.</p>  <p>Properties available for clients (not comprehensive):</p> <ul> <li>border_color (string): The client border color</li> <li>border_width (int): The client border width</li> <li>buttons (table): The client specific mouse bindings</li> <li>class (string): The client class*</li> <li>floating (bool): If client must be floating</li> <li>focus (bool): The client focus</li> <li>instance (string): The client instance*</li> <li>keys (table): The client specific key bindings</li> <li>maximized_horizontal (bool): If client must be maximized horizontaly</li> <li>maximized_vertical (bool): If client must be maximized vertically</li> <li>minimized (bool): If client must be minimized</li> <li>name (string): The client name*</li> <li>ontop (bool): If client must be on top</li> <li>screen (int): The client current screen</li> <li>size_hints_honor (bool): If client size limits hints should be used</li> <li>switchtotag (bool): If client's tag must be the selected on launch</li> <li>tag (string): The name of the tag to place it</li> <li>urgent (bool): If the urgent hint should be added when launched</li> </ul> <p>Properties available for tags (not comprehensive):</p> <ul> <li>icon (string): The tag icon</li> <li>mwfact (float): The Master width factor</li> <li>name (string): The tag name*</li> <li>ncol (int): The number of column windows</li> <li>nmaster (int): The number of master windows</li> <li>persistent (bool): If tag must not be deleted after clients are closed</li> <li>position (int): The tag position</li> <li>screen (int): The tag current screen</li> <li>selected (bool): If tag is selected</li> </ul> <p>Those marked with * are read only but listed for reference.</p>  <p>Here it is a really small setup example:</p> <pre>rules = {}</pre> <pre>rules.clients = {</pre> <pre>    -- All clients will match this rule.</pre> <pre>    {</pre> <pre>        rule = {},</pre> <pre>        properties = {</pre> <pre>            border_width = beautiful.border_width,</pre> <pre>            border_color = beautiful.border_normal,</pre> <pre>            focus = true,</pre> <pre>            size_hints_honor = false,</pre> <pre>            keys = clientkeys,</pre> <pre>            buttons = clientbuttons,</pre> <pre>            floating = false</pre> <pre>        },</pre> <pre>    },</pre> <pre>    -- This is for Emacs only</pre> <pre>    {</pre> <pre>        rule = { class="Emacs" },</pre> <pre>        properties = {</pre> <pre>            tag = "emacs"</pre> <pre>        }</pre> <pre>    }</pre> <pre>}</pre>  <pre>rules.tags = {</pre> <pre>    -- All tags will match this rule.</pre></pre> <pre>    {</pre> <pre>        rule = {},</pre> <pre>        properties = {</pre> <pre>            screen = 1</pre> <pre>        },</pre> <pre>    },</pre> <pre>    -- This is for the emacs and www tags only</pre> <pre>    {</pre> <pre>        rule_any = { name="emacs", name="www" },</pre> <pre>        properties = {</pre> <pre>            screen = 2,</pre> <pre>            position = 1</pre> <pre>        }</pre> <pre>    }</pre> <pre>}</pre>  <code>swifty.init({ promptbox=mypromptbox, globalkeys=globalkeys, modkey=modkey, bind_keys=true, bind_numbers=true }) </code></p>
+
+<p><b>Author:</b>
+<table class="authors_list">
+
+	<tr><td class="name">Fabian Ezequiel Gallina &lt;fabian@anue.biz&gt;</td></tr>
+
+</table>
+</p>
+
+
+<p>Copyright&copy; 2012 Fabian Ezequiel Gallina</p>
+
+
+<p><small><b>Release:</b> 0.1 </small></p>
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#clients.apply_rules">clients.apply_rules</a>&nbsp;(client)</td>
+	<td class="summary">Apply rules to given client.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#clients.commands._move_to_tag">clients.commands._move_to_tag</a>&nbsp;(direction)</td>
+	<td class="summary">Move the current focused client to the tag to direction.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#clients.commands.move_to_left_tag">clients.commands.move_to_left_tag</a>&nbsp;()</td>
+	<td class="summary">Move the current focused client to the tag on the left.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#clients.commands.move_to_right_tag">clients.commands.move_to_right_tag</a>&nbsp;()</td>
+	<td class="summary">Move the current focused client to the tag on the right.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#clients.commands.restore_rules">clients.commands.restore_rules</a>&nbsp;()</td>
+	<td class="summary">Reapply all defined rules to the current focused client.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#clients.commands.restore_tag">clients.commands.restore_tag</a>&nbsp;()</td>
+	<td class="summary">Move the current focused client to the tag defined in the rules.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#clients.move_to_tag">clients.move_to_tag</a>&nbsp;(client, tag, select)</td>
+	<td class="summary">Move a client to a tag.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#collect_attributes">collect_attributes</a>&nbsp;(thing)</td>
+	<td class="summary">Get client or tag attributes for matched rules.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#init">init</a>&nbsp;(args)</td>
+	<td class="summary">Initialize swifty.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#match">match</a>&nbsp;(thing, rule)</td>
+	<td class="summary">Check if a client or tag match a rule.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#match_any">match_any</a>&nbsp;(thing, rule, rules)</td>
+	<td class="summary">Check if a client or tag match a rule.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.apply_rules">tags.apply_rules</a>&nbsp;(tag)</td>
+	<td class="summary">Apply rules to given tag.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.cleanup">tags.cleanup</a>&nbsp;(name)</td>
+	<td class="summary">Cleanup non persistent empty tags.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands._move_to_screen">tags.commands._move_to_screen</a>&nbsp;(direction)</td>
+	<td class="summary">Move the current tag to given screen direction.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands.add">tags.commands.add</a>&nbsp;()</td>
+	<td class="summary">Prompt for tag name to create.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands.delete">tags.commands.delete</a>&nbsp;()</td>
+	<td class="summary">Delete selected tags with no clients attached.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands.move_left">tags.commands.move_left</a>&nbsp;()</td>
+	<td class="summary">Move a tag to the left.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands.move_right">tags.commands.move_right</a>&nbsp;()</td>
+	<td class="summary">Move a tag to the right.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands.move_to_next_screen">tags.commands.move_to_next_screen</a>&nbsp;()</td>
+	<td class="summary">Move a tag to the next screen.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands.move_to_prev_screen">tags.commands.move_to_prev_screen</a>&nbsp;()</td>
+	<td class="summary">Move a tag to the previous screen.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands.rename">tags.commands.rename</a>&nbsp;()</td>
+	<td class="summary">Rename a tag.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands.restore_position">tags.commands.restore_position</a>&nbsp;()</td>
+	<td class="summary">Move the current focused tag to the proper position defined in the rules.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.commands.restore_rules">tags.commands.restore_rules</a>&nbsp;()</td>
+	<td class="summary">Reapply all defined rules to the current focused tag.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.create">tags.create</a>&nbsp;(name)</td>
+	<td class="summary">Create a tag.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.find">tags.find</a>&nbsp;(name, screen, idx)</td>
+	<td class="summary">Find a specific tag from name, screen and idx.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.find_by_name">tags.find_by_name</a>&nbsp;(name, screen)</td>
+	<td class="summary">Matches string 'name' to tag objects.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.get_or_create">tags.get_or_create</a>&nbsp;(name, create)</td>
+	<td class="summary">Get or create an existing tag.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.init">tags.init</a>&nbsp;()</td>
+	<td class="summary">Initialize tags.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.move">tags.move</a>&nbsp;(tag, position)</td>
+	<td class="summary">Move a tag to an absolute position in the screen:tags() table.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#tags.move_to_screen">tags.move_to_screen</a>&nbsp;(tag, screen)</td>
+	<td class="summary">Move a tag to a given screen.</td>
+	</tr>
+
+</table>
+
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="clients.apply_rules"></a><strong>clients.apply_rules</strong>&nbsp;(client)</dt>
+<dd>
+Apply rules to given client.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  client: The client to apply rules to
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+(client) the modified client, (table) the applied properties
+
+
+
+</dd>
+
+
+
+
+<dt><a name="clients.commands._move_to_tag"></a><strong>clients.commands._move_to_tag</strong>&nbsp;(direction)</dt>
+<dd>
+Move the current focused client to the tag to direction. This is the internal implementation of clients.commands.move_to_left_tag and clients.commands.move_to_right_tag
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  direction: number, when positive move to right else to left
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="clients.commands.move_to_left_tag"></a><strong>clients.commands.move_to_left_tag</strong>&nbsp;()</dt>
+<dd>
+Move the current focused client to the tag on the left.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="clients.commands.move_to_right_tag"></a><strong>clients.commands.move_to_right_tag</strong>&nbsp;()</dt>
+<dd>
+Move the current focused client to the tag on the right.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="clients.commands.restore_rules"></a><strong>clients.commands.restore_rules</strong>&nbsp;()</dt>
+<dd>
+Reapply all defined rules to the current focused client.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="clients.commands.restore_tag"></a><strong>clients.commands.restore_tag</strong>&nbsp;()</dt>
+<dd>
+Move the current focused client to the tag defined in the rules.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="clients.move_to_tag"></a><strong>clients.move_to_tag</strong>&nbsp;(client, tag, select)</dt>
+<dd>
+Move a client to a tag.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  client: (optional) client to move (defaults to the focused one)
+	</li>
+	
+	<li>
+	  tag: tag object or idx to move the client to
+	</li>
+	
+	<li>
+	  select: if true, select the tag where the app has moved to
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true when the client has moved
+
+
+
+</dd>
+
+
+
+
+<dt><a name="collect_attributes"></a><strong>collect_attributes</strong>&nbsp;(thing)</dt>
+<dd>
+Get client or tag attributes for matched rules.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  thing: The client or tag
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+(table) properties, (table) callbacks
+
+
+
+</dd>
+
+
+
+
+<dt><a name="init"></a><strong>init</strong>&nbsp;(args)</dt>
+<dd>
+Initialize swifty. The only mandatory key in the configuration table is promptbox, which is used for prompts when renaming tags and such.  If globalkeys and modkey are provided then swifty is able to to bind default keys to manage tags and clients.  bind_keys controls wether to bind standard bindings or not. bind_numbers wether to bind number keys combinations to manage tags.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  args: Configuration table
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+swifty.init({ promptbox=mypromptbox, globalkeys=globalkeys, modkey=modkey, bind_keys=true, bind_numbers=true, history_limit=10 })
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="match"></a><strong>match</strong>&nbsp;(thing, rule)</dt>
+<dd>
+Check if a client or tag match a rule.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  thing: The client or tag
+	</li>
+	
+	<li>
+	  rule: The rule to check
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+True if it matches, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="match_any"></a><strong>match_any</strong>&nbsp;(thing, rule, rules)</dt>
+<dd>
+Check if a client or tag match a rule. Multiple can be matched.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  thing: The client or tag
+	</li>
+	
+	<li>
+	  rule: 
+	</li>
+	
+	<li>
+	  rules: The rule to check
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+True if at least one rule is matched, false otherwise
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.apply_rules"></a><strong>tags.apply_rules</strong>&nbsp;(tag)</dt>
+<dd>
+Apply rules to given tag.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  tag: The tag to apply rules to
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+(tag) the modified tag, (table) the applied properties
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.cleanup"></a><strong>tags.cleanup</strong>&nbsp;(name)</dt>
+<dd>
+Cleanup non persistent empty tags.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: The client
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands._move_to_screen"></a><strong>tags.commands._move_to_screen</strong>&nbsp;(direction)</dt>
+<dd>
+Move the current tag to given screen direction. This is the internal implementation of tags.commands.move_to_prev_screen and tags.commands.move_to_next_screen
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  direction: number, when positive move to right else to left
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands.add"></a><strong>tags.commands.add</strong>&nbsp;()</dt>
+<dd>
+Prompt for tag name to create.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands.delete"></a><strong>tags.commands.delete</strong>&nbsp;()</dt>
+<dd>
+Delete selected tags with no clients attached.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands.move_left"></a><strong>tags.commands.move_left</strong>&nbsp;()</dt>
+<dd>
+Move a tag to the left.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands.move_right"></a><strong>tags.commands.move_right</strong>&nbsp;()</dt>
+<dd>
+Move a tag to the right.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands.move_to_next_screen"></a><strong>tags.commands.move_to_next_screen</strong>&nbsp;()</dt>
+<dd>
+Move a tag to the next screen.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands.move_to_prev_screen"></a><strong>tags.commands.move_to_prev_screen</strong>&nbsp;()</dt>
+<dd>
+Move a tag to the previous screen.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands.rename"></a><strong>tags.commands.rename</strong>&nbsp;()</dt>
+<dd>
+Rename a tag.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands.restore_position"></a><strong>tags.commands.restore_position</strong>&nbsp;()</dt>
+<dd>
+Move the current focused tag to the proper position defined in the rules.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.commands.restore_rules"></a><strong>tags.commands.restore_rules</strong>&nbsp;()</dt>
+<dd>
+Reapply all defined rules to the current focused tag.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.create"></a><strong>tags.create</strong>&nbsp;(name)</dt>
+<dd>
+Create a tag.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: The tag name
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the created tag object
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.find"></a><strong>tags.find</strong>&nbsp;(name, screen, idx)</dt>
+<dd>
+Find a specific tag from name, screen and idx.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: 
+	</li>
+	
+	<li>
+	  screen: 
+	</li>
+	
+	<li>
+	  idx: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+tag object or nil
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.find_by_name"></a><strong>tags.find_by_name</strong>&nbsp;(name, screen)</dt>
+<dd>
+Matches string 'name' to tag objects.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: 
+	</li>
+	
+	<li>
+	  screen: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+table of tag objects or nil
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.get_or_create"></a><strong>tags.get_or_create</strong>&nbsp;(name, create)</dt>
+<dd>
+Get or create an existing tag.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  name: The tag name
+	</li>
+	
+	<li>
+	  create: If set force the creation of the tag even if other exists
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+(bool) if created, (tag) the tag, (table) applied properties
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.init"></a><strong>tags.init</strong>&nbsp;()</dt>
+<dd>
+Initialize tags. Takes care of creating persistent tags
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.move"></a><strong>tags.move</strong>&nbsp;(tag, position)</dt>
+<dd>
+Move a tag to an absolute position in the screen:tags() table. This is function is pretty much the same as awful.tag.move except it handles corner cases gracefully plus it reorders the params to be the same as everywhere in the swifty api (tag comes first)
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  tag: tag object to move
+	</li>
+	
+	<li>
+	  position: (optional) Integer absolute position
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="tags.move_to_screen"></a><strong>tags.move_to_screen</strong>&nbsp;(tag, screen)</dt>
+<dd>
+Move a tag to a given screen.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  tag: (optional) tag object to move
+	</li>
+	
+	<li>
+	  screen: Integer screen position
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true is tag has been moved to given screen
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>
