@@ -623,7 +623,11 @@ tags.get_or_create = function(name, create)
         tag = ttags[1]
     end
 
-    return created, tags.apply_rules(tag)
+    if created then
+        return created, tags.apply_rules(tag)
+    else
+        return false, tag, nil
+    end
 end
 
 --- Create a tag.
