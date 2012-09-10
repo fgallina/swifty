@@ -125,7 +125,7 @@ local capi = {
 -- <pre>    },</pre>
 -- <pre>    -- This is for the emacs and www tags only</pre>
 -- <pre>    {</pre>
--- <pre>        rule_any = { name="emacs", name="www" },</pre>
+-- <pre>        rule_any = { name={"emacs", "www"} },</pre>
 -- <pre>        properties = {</pre>
 -- <pre>            screen = 2,</pre>
 -- <pre>            position = 1</pre>
@@ -530,14 +530,12 @@ end
 tags.apply_rules = function(tag)
     local props, callbacks = collect_attributes(tag)
     if not props and not callbacks then return tag end
-
     -- This is a really important thing to have set beforehand, specially for
     -- position tweaking
     if props and props.screen then
         tag.screen = props.screen
         props.screen = nil
     end
-
     -- move the tag to the defined position or to the last slot when is not
     -- defined, after that remove it from the list of properties to process so
     -- the auto-property setting does not fail. After setting everything make
