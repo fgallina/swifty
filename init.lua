@@ -547,25 +547,31 @@ tags.apply_rules = function(tag)
     local screen = tag.screen
     local ttags = capi.screen[screen]:tags()
     if #ttags > 1 then
-        for i, t in ipairs(ttags) do
-            if t == tag then
-                table.remove(ttags, i)
-                break
-            end
-        end
-        if not position then
-            table.insert(ttags, #ttags+1, tag)
-        elseif #ttags == 0 then
-            table.insert(ttags, 1, tag)
-        else
-            for i, t in ipairs(ttags) do
-                local tpos = awful.tag.getproperty(t, "position")
-                if not tpos or tpos > position then
-                    table.insert(ttags, i, tag)
-                    break
+        table.sort(
+            ttags,
+            function(a, b)
+                local apos = awful.tag.getproperty(a, "position")
+                local bpos = awful.tag.getproperty(b, "position")
+                if not apos then
+                    if not bpos then
+                        return a.name <= b.name
+                    else
+                        return false
+                    end
+                else
+                    if not bpos then
+                        return true
+                    else
+                        if apos < bpos then
+                            return true
+                        elseif apos == bpos then
+                            return a.name < b.name
+                        else
+                            return false
+                        end
+                    end
                 end
-            end
-        end
+            end)
         capi.screen[screen]:tags(ttags)
     end
     props.position = nil
