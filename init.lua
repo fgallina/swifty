@@ -6,6 +6,7 @@
 -- @release 0.1
 ---------------------------------------------------------------------------
 
+local dbg = require("dbg")
 local awful = require("awful")
 local beautiful = require("beautiful")
 local ipairs = ipairs
@@ -29,7 +30,8 @@ local capi = {
 --     {
 --         [rule|rule_any] = MATCH_TABLE,
 --         [except|except_any] = EXCEPT_TABLE,
---         properties = PROPERTIES_TABLE
+--         properties = PROPERTIES_TABLE,
+--         callback = FUNCTION
 --     }
 -- </pre>
 -- <p>`rule` is table that might be empty to match anything or contain one or
@@ -52,8 +54,8 @@ local capi = {
 -- <p>`except` and `except_any` are analog to `rule` and `rule_any` respectively,
 -- except they exclude matching clients.</p>
 --
--- <p>Finally the `properties` table is a hash table of properties to apply to
--- the matched element.</p>
+-- <p>`properties` table is a hash table of properties to apply to the matched
+-- element.</p>
 --
 -- <p>Properties available for clients (not comprehensive):</p>
 -- <ul>
@@ -89,6 +91,15 @@ local capi = {
 --     <li>selected (bool): If tag is selected</li>
 -- </ul>
 -- <p>Those marked with * are read only but listed for reference.</p>
+--
+-- <p>`callback` is the same as you would expect from the awesome standard
+-- rules system. Whenever you append a callback to a tag or client matching
+-- rule, the first argument is always the matched tag or client. In case you
+-- are using tag callbacks and making awful.tag calls to modify some property,
+-- you need to make the tag parameter for each awful.tag method explicit with
+-- the value received in the argument of the callback function, the reason for
+-- this is that since callbacks are executed at tag creation time if you don't
+-- follow this recommendation you might find unexpected behavior.</p>
 --
 -- <p>Here it is a really small setup example:</p>
 -- <pre>rules = {}</pre>
@@ -130,6 +141,16 @@ local capi = {
 -- <pre>            screen = 2,</pre>
 -- <pre>            position = 1</pre>
 -- <pre>        }</pre>
+-- <pre>    },</pre>
+-- <pre>    {</pre>
+-- <pre>        rule = { name="im" },</pre>
+-- <pre>        properties = {</pre>
+-- <pre>            position = 2,</pre>
+-- <pre>        },</pre>
+-- <pre>        callback = function (tag)</pre>
+-- <pre>            awful.tag.setnmaster(2, tag)</pre>
+-- <pre>            awful.tag.incmwfact(-0.1, tag)</pre>
+-- <pre>        end</pre>
 -- <pre>    }</pre>
 -- <pre>}</pre>
 --
@@ -532,10 +553,11 @@ tags.apply_rules = function(tag)
     if not props and not callbacks then return tag end
     -- This is a really important thing to have set beforehand, specially for
     -- position tweaking
-    if props and props.screen then
+    if props and props.screen and props.screen <= capi.screen.count() then
+        awful.tag.setproperty(tag, "screen", props.screen)
         tag.screen = props.screen
-        props.screen = nil
     end
+    props.screen = nil
     -- move the tag to the defined position or to the last slot when is not
     -- defined, after that remove it from the list of properties to process so
     -- the auto-property setting does not fail. After setting everything make
@@ -592,6 +614,7 @@ tags.apply_rules = function(tag)
 
     props.position = position
 
+    awful.tag.viewonly(tag)
     for i, callback in pairs(callbacks) do
         callback(tag)
     end
@@ -609,7 +632,12 @@ tags.get_or_create = function(name, create)
     -- try to find an existing tag matching name
     local ttags = nil
     if not create then
-        ttags = tags.find_by_name(name, screen)
+        for screen = 1, capi.screen.count() do
+            ttags = tags.find_by_name(name, screen)
+            if ttags and #ttags > 0 then
+                break
+            end
+        end
     end
     local created = false
     local tag = nil
