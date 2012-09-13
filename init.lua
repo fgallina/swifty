@@ -6,7 +6,6 @@
 -- @release 0.1
 ---------------------------------------------------------------------------
 
-local dbg = require("dbg")
 local awful = require("awful")
 local beautiful = require("beautiful")
 local ipairs = ipairs
